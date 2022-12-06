@@ -1,0 +1,190 @@
+
+存储管理
+静态存储 static storage
+
+分配的变量只构造一次，持续到程序结束
+.
+多线程程序（共享地址空间的并行）要注意同步问题
+
+全局变量
+
+namespace变量
+
+static 变量
+
+link 期间创建存储空间的对象 包括：
+
+函数内 static 变量
+
+自动存储 = "放在堆栈里" automatic storage
+
+包括 函数参数，局部变量
+
+自动创建，销毁
+
+可用 C++冗余关键字auto 标识
+
+自由存储 = 动态存储 = "堆"
+
+new/delete（操作符，自动构造/析构）
+
+malloc/free（库函数，不自动构造/析构）
+
+包括:
+
+在一个程序的整个运行期间，自由存储将不断扩大，不会把存储返还给 OS 供其他程序使用
+
+auto_ptr <memory>
+一个模板类，支持"资源申请即自动化"(RAII)
+
+模仿一个指针的行为，不同：退出作用域时（包括异常退出），其所指对象将隐式自动删除（delete）
+
+破坏性复制语义（distructive copy sementics）将一个 auto_ptr复制给另一个后（即赋值），原来的 auto_ptr将不指向任何东西
+
+异常安全性：异常退出完全没有额外开销
+
+C 风格的分配 <cstdlib>
+void* malloc(size_t s); // 分配 s 个字节 - buffer = (char*) malloc (i+1);
+void* calloc(size_t n, size_t s); // 分配 n*s 个字节，初始化0 - pData = (int*) calloc (i,sizeof(int));
+void* free(); // 释放 malloc calloc分配的空间 - free (buffer);
+void* realloc(void* p, size_t s); // 将 p 所指数组的大小变为 s，复制到新空间，并释放 p
+memcpy 复制不重叠区域
+memmove 复制可能重叠区域
+vector 中[]和at()的区别：at()带范围检查，[]不带范围检查
+try-catch
+throw 抛出异常给（调用包含 throw 的函数）的调用者
+try {
+    // 可能造成异常的代码
+}
+catch( 某种类型的异常，如 out_of_range ) {
+    cout << "out of range\n";
+}
+catch( ... ) { // ...代表默认的异常处理器
+    cout << "unknown exception thrown\n";
+}
+
+class和 struct 的区别
+=====================
+唯一不同：struct 默认 public:（访问描述符），而 class默认 private:
+
+const
+=====
+```C++
+char* p = "Plato"; // "Plato"类型为 const char[6] sizeof("Plato") == 6
+p[4] = 'e'; // error, 给常量赋值
+成员常量
+class X { public: static const int c1 = 7; ... }
+常数成员函数：指明该函数不会修改类的状态
+class Date {
+    int d, m, y;
+public:
+    int day() const {return d;} // ok
+    int year() const {return y++;} // error， 在 const 函数中试图修改成员值
+}
+void f(Date& d, const Date& cd) { // const声明 cd 不会在 f()中被修改（const 对象）
+    int i = d.day();  // ok
+    d.add_year(1);    // ok
+    int j = cd.day(); // ok
+    cd.add_year(1);   // error, 不能修改 const cd 值
+}
+非const 成员函数：const 对象不可调用，因为非 const 成员函数意味着可能被修改，只有 const 成员函数可以保证内部成员不被修改
+const_iterator 用于不加修改的访问
+指针和常量
+const void* you; // you are a pointer to void const. *you 不可修改，但 you 可以指向别的变量
+void* const you2; // you2 are a const pointer to void. *you2 可以修改，但 you2 不可以指向其他变量
+const void* const you3; // you3 are a const pointer to void const. *you3 you 都不可修改
+C++的显式类型转换，不用"()"方法
+static_cast<int> 相关类型的转换
+reinterpret_cast<...> 互不相关类型的转换
+物理常量性和逻辑常量性
+物理：实际上就是变量
+逻辑：对用户而言是常量，但在用户不能访问的细节上不是常量 -> 实质不是常量
+- 用途：在常量成员函数中可能需要实际修改对象！
+1. const_cast<类指针>
+- 强制去掉对象的 const 属性
+- 缺点：未定义行为：对 const 对象调用包含 const_cast的 const 成员函数
+2. mutable 可变的
+- 对可能要发生变化的成员前加 mutable（存储描述符）
+- 实质：对加了 mutable 的成员，无视所有 const 声明
+dynamic_cast
+dynamic_cast<T>(p)
+将指针 p 强转为 T类型，若转换失败返回0
+程序终止 <cstdlib>
+exit(0);
+调用静态对象的析构
+终止程序，将参数作为程序的返回值返回给"系统"
+abort();
+不调用静态对象的析构，直接终止程序
+atexit(&my_cleanup) == 0 ? 终止成功 : 失败
+my_cleanup是个无参数无返回值的自定义函数
+存在一个（由实现确定的）atexit()函数的最大数目
+调用静态对象的析构
+调用 my_cleanup
+终止程序
+extern
+用于多个编译单元（一个.cpp + 与之 include 的.h）共用同一个全局变量时，（只作）声明变量用
+外部连接：一个名字在多个编译单元间使用
+内部连接：一个名字只在定义所在的变异单元内使用
+一个 inline 函数必须通过完全一样的定义，在需要用它的每个编译单元里定义（不能加 extern！）
+默认情况下，const typedef 都是内部连接，可加 extern，因此 inline const typedef 最好都放在头文件里
+explicit 用于显式构造函数
+单个参数的构造函数可用"= 参数值"方式，隐式调用构造函数
+class X {
+    int i;
+public:
+    X(int ii): i(ii) { cout << i; }
+    ~X() {}
+}
+X x = 3.14; // 先将3.14强转为 int 型(3)，再隐式调用构造函数 X(3)
+若构造函数定义前加上explicit，则以上隐式方法失效，必须显式调用：X x = X(3.14);
+friend 友元
+在类内部生命为 friend 的函数，在类外部也能访问该类的 private 成员
+类似玩法：friend class X; 将类 X 所有成员函数变成友元
+实质：生命哪些是 friend，致谢 friend 能访问 private 东西
+友元既不能继承，也不能传递，也没有交换性
+protected 成员：派生类的友元可访问
+protected 基类
+class X: protected Base {}; X指针试图转换成 Base 指针时，将发生错误
+继承描述符 public   ，父类 public    成员 -> 子类 public    成员
+继承描述符 public   ，父类 protected 成员 -> 子类 protected 成员
+继承描述符 protected，父类 public    成员 -> 子类 protected 成员
+继承描述符 protected，父类 protected 成员 -> 子类 protected 成员
+继承描述符 private  ，父类 public    成员 -> 子类 private   成员
+继承描述符 private  ，父类 protected 成员 -> 子类 private   成员
+register
+希望做针对频繁访问的编译优化
+RTTI = Run Time Type Information
+dynamic_cast（RTTI 的实现）
+static（C 含义）静态分配
+未初始化 局部/全局 static 变量 -> .bss段
+已初始化 局部/全局 staitc 变量 -> .data段
+声明一个函数/变量仅仅属于定义所在的编译单元
+e.g.
+// file1.c
+static int glob;
+// file2.c
+static int glob;
+表示有2个不同的 glob 排他地使用
+C++用无名名字空间替代
+static（C++含义）
+静态成员（常量成员必须为静态）/静态成员函数，不用定义对象就能使用
+局部静态存储
+第一次调用时初始化调用构造函数，退出作用域后并不销毁，第二次调用时不会再次调用构造函数
+typeid()
+运算符，获得一个对象的确切类型
+重载和覆盖
+重载 overload：同一个作用域内，相同函数名，不同参数列表
+覆盖 override：派生类的函数可以覆盖基类的同名虚函数
+
+图片
+
+
+
+
+
+
+
+
+
+
+
