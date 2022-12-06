@@ -1,0 +1,105 @@
+tuya app 添加设备
+
+复位按下主机双键
+1.小家电->扫地机器人(Wi-Fi)->输入家用网络用户名，密码->确认指示灯快闪->热点配网->去连接->选择扫地机AP
+热点->确认连接热点无误，继续下一步->按下主机双键->扫地机AP热点关闭，等待主机twc_tuya_iot_node重启->连接成功。
+
+
+2.小家电->扫地机器人(Wi-Fi)->输入家用网络用户名，密码->确认指示灯快闪->WiFi快连->关闭家用WiFi进入ap热点
+
+3.配网成功后，手机连接家用wifi->小家电->扫地机器人(Wi-Fi)->输入家用网络用户名，密码->确认指示灯快闪->热点配网->去连接->选择家用wifi->确认连接热点无误，继续下一步
+
+
+
+配网成功下 按复位键 关闭家用wifi，开启AP
+
+复位键关闭twc_tuya节点需重启机器
+
+app删除设备 关闭家用wifi tuya未连接5.1 需重启机器
+
+
+app 添加完设备断开ap
+
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2006-2011 OpenWrt.org
+
+START=100
+STOP=100
+
+USE_PROCD=1
+DEPEND=boot
+PROG=zeromess
+OOM_ADJ=-17
+
+start_service() {
+	export CMAKE_PREFIX_PATH=/usr
+	export PKG_CONFIG_PATH=/usr/lib/pkgconfig
+	export ROS_ROOT=/usr/share/ros
+	export ROS_PACKAGE_PATH=/usr/share
+	export ROS_LOG_DIR=/mnt/UDISK
+	#export ROS_HOSTNAME=localhost
+	#export ROS_MASTER_URI=http://localhost:11311
+	export ROS_MASTER_URI=http://192.168.5.1:11311
+	export LD_LIBRARY_PATH=/usr/lib
+	export ROS_ETC_DIR=/usr/etc/ros
+	export ROS_DISTRO=kinetic
+	export ROS_VERSION=1
+	export ROSLISP_PACKAGE_DIRECTORIES=/usr/share/common-lisp
+	export ROS_IP=192.168.5.1
+
+	roslaunch robot_setup zeromess_z1.launch
+}
+
+#stop_service() {
+#    procd_open_instance
+#    wpa=`ps | grep wpa_supplicant | grep -v grep`
+#    [ -n "$wpa" ] && {
+#        killall  wpa_supplicant
+#		sleep 1
+#    }
+#    ifconfig wlan0 down
+#    procd_close_instance
+#}
+#restart() {
+#    stop $@
+#    start $@
+#}
+
+
+
+
+
+    <include file="$(find robot_setup)/launch/include/tuya_ros_node.launch"> 
+        <arg name="OUTPUT_METHOD" value="$(arg OUTPUT_METHOD)" />            
+        <arg name="RESPAWN" value="$(arg RESPAWN)"/>             
+        <arg name="ROBOT_TYPE" value="$(arg ROBOT_TYPE)"/>                   
+    </include>                                                               
+                                                                             
+                                                                 
+    <include file="$(find robot_setup)/launch/include/tuya.launch">           
+        <arg name="OUTPUT_METHOD" value="$(arg OUTPUT_METHOD)" />  
+        <!--<arg name="RESPAWN" value="$(arg RESPAWN)"/>-->                  
+        <arg name="ROBOT_TYPE" value="$(arg ROBOT_TYPE)"/>                  
+    </include>  
+
+roslaunch robot_setup tuya.launch
+
+
+/proc/3612/net/rtl8723ds# cat ver_info 
+rtl8723ds v5.6.5_31752.20181221_COEX20181130-2e2e
+
+
+lsmod
+ cd proc/net/rtl8723ds/wlan
+wlan0/  wlan1/
+
+/proc/3612/net/rtl8723ds/wlan0# cat btcoex
+
+ ============[BT Coexist info 8723D]============
+
+
+
+
+
+
+

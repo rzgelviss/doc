@@ -1,0 +1,52 @@
+docker load < docker-tina-sdk-1.1.0.tar
+docker run -it -d --name my_docker -v ~/tina_sdk:/work/tina ubuntu:tina-1.1.0
+docker exec -it my_docker  /bin/bash
+cd work/tina
+source build/envsetup.sh
+lunch mr813_evb2-tina
+cd package/ros/ros-app/my_package
+修改makefile
+mm -B
+
+生成文件目录twc_tuya_iot_node
+/tina_sdk/out/mr813-evb2/compile_dir/target/tuya_iot/ipkg-install/lib/twc_tuya_iot
+~/tina_sdk/out/mr813-evb2/compile_dir/target/twc_tuya_iot/devel/twc_tuya_iot/lib/twc_tuya_iot
+
+roslaunch
+cp twc_tuya_iot_node /usr/lib/twc_tuya_iot/
+
+make menuconfig ros->ros-app->删除已有刷新选择新加包->重新编译
+
+/home/hackin/work/tina/out/mr813-evb2/packages/base/twc_database_*.ipk
+
+cd ~/work/tina
+source build/envsetup.sh
+lunch mr813_evb2-tina
+make menuconfig
+
+cd package/ros/ros-app/my_package
+修改makefile
+mm -B
+
+vim ~/work/tina/target/allwinner/mr813-evb2/defconfig
+修改wget =y
+cd ~/work/tina/
+make defconfig
+make package/busybox/clean
+make package/busybox/compile V=s
+
+find out -name busybox*.ipk
+scp *.ipk root@192.168.5.1:~
+
+
+
+git submodule update --init --recursive
+~/tina_sdk/package/ros/ros-app/chassis/chassis
+
+docker exec it tina bash
+
+
+
+
+
+

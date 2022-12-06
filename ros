@@ -1,0 +1,169 @@
+sudo apt-get install ros-melodic-ros-base
+
+source /opt/ros/melodic/setup.bash
+source devel/setup.bash
+cd /catkon_ws
+catkin_make
+rosrun
+
+catkin_ws目录
+创建功能包命令$ 
+catkin_create_pkg chapter2_tutorials std_msgs roscpp
+rospack find chapter2_tutorials
+rosrun roscpp_tutorials add_two_ints_client
+rosnode list
+rosnode info rosout
+
+列出活动话题
+rostopic list
+并将每个话题的消息类型一起显示
+rostopic list -v
+实时显示指定话题的消息内容
+rostopic echo /turtle1/pose
+显示指定话题的消息数据发布周期	
+rostopic hz /turtle1/pose
+显示指定话题的信息
+rostopic info /turtle1/pose
+rostopic pub [话题名称] [消息类型] [参数]：使用指定的话题名称发布消息
+rostopic pub -1 /turtle1/cmd_vel geometry_msgs/Twist -- ‘[2.0, 0.0, 0.0]’ ‘[0.0, 0.0, 1.8]’
+
+rosservice list        列出活动的服务信息
+rosservice call       使用给定参数调用服务
+rosservice type      打印出服务类型
+rosservice find       查找给定类型的服务
+rosservice uri         打印服务的ROSRPC 源
+
+rosparam set            设置参数值
+rosparam get            获取参数值
+rosparam load           从文件加载参数
+rosparam dump           存储参数到文件
+rosparam delete         删除参数
+rosparam list           列出参数名
+
+可以通过rosparam set设置参数值，例如如下命令设置背景色中的红色通道值为200：
+rosparam set /background_r 200
+ 必须再调用clear服务来刷新背景：
+$ rosservice call /clear
+rosparam get /background_g
+
+如下命令将当前命名空间中的所有参数写入params.yaml文件。
+$ rosparam dump params.yaml
+如下命令从params.yaml文件中加载所有参数到copy命名空间。
+$ rosparam load params.yaml copy
+ 然后可以读取该空间中的参数：
+$ rosparam get /copy/background_b<br>255
+
+rqt_console 和 roslaunch
+sudo apt-get install ros-melodic-rqt ros-melodic-rqt-common-plugins ros-melodic-turtlesim
+
+
+ssh-keygen
+cat ~/.ssh/id_rsa.pub
+git clone ssh://git@192.168.1.10:30001/TWC/clxd01/upperpc/twc_connectivity.git
+git branch -av
+git clone ssh://git@192.168.1.10:30001/TWC/clxd01/upperpc/twc_msgs.git
+git checkout mr813_devel
+source devel/setup.bash
+catkin_make
+/home/twc/catkin_ws/devel/lib/twc_tuya_iot/twc_tuya_iot_node
+
+
+/opt/ros/melodic/include/sensor_msgs
+/opt/ros/melodic/share/std_msgs/msg
+
+
+roscore
+rosbag play test_5.bag
+
+rviz
+
+rostopic echo /map
+rostopic info /map
+rosmsg show nav_msgs/OccupancyGrid
+rosrun map_server map_saver
+
+catkin_make -DCMAKE_BUILD_TYPE=Debug
+gdb /home/twc/catkin_ws/devel/lib/twc_tuya_iot/twc_tuya_iot_node
+r
+quit
+
+
+git config --global core.editor vim
+git log --online
+git tag -a commit-id
+git tag -d commit-id
+git describe --long --dirty
+
+
+c++ observe 通知者设计模式
+roslaunch twc_task_manager task_manager.launch
+export ROS_IP=192.168.1.44
+设备:
+export ROS_MASTER_URI='http://192.168.1.30:11311'
+export ROS_MASTER_URI='http://192.168.5.1:11311'
+母站：
+192.168.5.6
+192.168.1.31  
+export  | grep ROS
+rostopic pub /station_motor_request twc_controller_msgs/MotorControl "{name: 'vacuum_cleaner', option: 'close', direction: true, speed: 0, status: 0}"
+export ROS_MASTER_URI='http://192.168.1.44:11311'
+
+
+
+		tuya_iot	task_manager    twc_wifi
+ros_ip		192.168.5.6	5.6		192.168.5.6
+ros_master	192.168.5.1	5.1		192.168.5.1
+
+rostopic pub /battery_voltage sensor_msgs/BatteryState "header:seq: 0
+
+
+sudo ifconfig enp0s31f6 192.168.1.44/24
+sudo vim /etc/resolv.conf
+
+ssh root@192.168.5.1
+123
+
+rostopic pub /control_cmd std_msgs/String "data: 'leave_station'"
+rostopic pub /control_cmd std_msgs/String "data: 'docking'"
+rostopic pub /control_cmd std_msgs/String "data: 'resource'"
+rostopic pub /device_cmd std_msgs/Int16 "data: 0x300"
+rostopic pub /device_cmd std_msgs/Int16 "data: 0x200"
+rostopic pub /device_cmd std_msgs/Int16 "data: 0x100"
+
+
+rosrun teleop_keyboard teleop_keyboard
+rostopic pub /control_cmd std_msgs/String "data: 'auto_clean'"
+rostopic pub /docking_response twc_controller_msgs/Docking
+rostopic pub /docking_request twc_controller_msgs/Docking
+rostopic echo /docking_response
+
+
+查看程序对应的进程号： ps -ef | grep 进程名字 查看进程号所占用的端口号： netstat -nltp | grep 进程号 查看端口号所使用的进程号: lsof -i:端口号
+
+
+cd /
+rm overlay/* 恢复初始镜像
+
+cd /etc/init.d
+
+fw_printenv
+fw_setenv
+修改channel 
+softap restart
+
+sudo systemctl start nginx.service
+
+
+
+内存泄漏
+
+内存泄漏是指由于疏忽或错误造成了程序未能释放掉不再使用的内存的情况。内存泄漏并非指内存在物理上消失，而是应用程序分配某段内存后，由于设计错误，失去了对该段内存的控制。
+
+检查、定位内存泄漏：
+
+检查方法： 在 main 函数最后面一行，加上一句_CrtDumpMemoryLeaks()。调试程序，自然关闭程序让其退出，查看输出： 被{}包围的 数字x 就是我们需要的内存泄漏定位值 定位代码位置： 在 main 函数第一行加上_CrtSetBreakAlloc(x);意思就是在申请 x这块内存的位置中断。然后调试程序，程序中断了，查看调用堆栈。加上头文件#include <crtdbg.h>
+
+
+
+
+

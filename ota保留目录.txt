@@ -1,0 +1,4 @@
+/usr/share/robot_setup/runtime/database
+/usr/share/robot_setup/runtime/maps
+/usr/share/robot_setup/runtime/tuya/
+/etc/wifi/wpa_supplicant.conf

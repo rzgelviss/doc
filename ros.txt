@@ -1,0 +1,17 @@
+sudo apt-get install ros-melodic-tf2*
+sudo apt-get install libsdl-image1.2-dev
+sudo apt-get install libsdl1.2-dev
+/usr/share/robot_setup/launch
+ssh root@192.168.5.1
+123
+
+TWC2020
+LION1998
+
+twc 1234
+
+
+cleanrobot 12345678
+
+/ect/init.d/soft_ap
+
